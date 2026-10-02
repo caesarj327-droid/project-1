@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        /* WARNA BACKGROUND SECTION MAKANAN (Krem Hangat Khas Resto) */
+        body {
+            background-color: #f5efe6;
+            color: #2c3e50;
+            padding-bottom: 100px;
+        }
+        /* HEADER DENGAN BACKGROUND GAMBAR RESTORAN */
+        header {
+            position: relative;
+            background: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), 
+                        url('https://i.pinimg.com/736x/b6/40/9c/b6409c50cf4253cefce4f7d095dc7a35.jpg');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 45px 20px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        header h1 {
+             font-size: 2.2rem;
+             margin-bottom: 8px;
+             letter-spacing: 1px;
+             text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+             font-family: serif, sans-serif;
+             color: #ffffff;
+        }
+        header p {
+            font-size: 1rem;
+            opacity: 0.95;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
+            color: #ffeb3b;
+        }
+        /* BAR INPUT NOMOR MEJA */
+        .table-bar {
+            background: #ffffff;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            border-bottom: 2px solid #e0e0e0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .table-bar label {
+            font-weight: 700;
+            color: #b71c1c;
+            font-size: 0.95rem;
+        }
+        .table-bar input {
+            padding: 6px 12px;
+            border: 1px solid #d32f2f;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            width: 100px;
+            text-align: center;
+            font-weight: bold;
+        }
+        /* Navigasi Kategori */
+        .category-nav-wrapper {
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            padding: 12px 0;
+        }
+        .category-nav {
+            display: flex;
+            overflow-x: auto;
+            white-space: nowrap;
+            padding: 0 15px;
+            gap: 8px;
+            scrollbar-width: none;
+        }
+        .category-nav::-webkit-scrollbar {
+            display: none;
+        }
+        .nav-btn {
+            border: 1px solid #ddd;
+            background: white;
+            color: #444;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .nav-btn.active, .nav-btn:hover {
+            background: #d32f2f;
+            color: white;
+            border-color: #d32f2f;
+            box-shadow: 0 3px 8px rgba(211, 47, 47, 0.3);
+        }
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+        .section-title {
+            font-size: 1.3rem;
+            color: #b71c1c;
+            margin: 30px 0 15px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #d32f2f;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        /* Grid Kartu Makanan */
+        .food-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 15px;
+        }
+        .food-card {
+            background: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            transition: transform 0.2s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        .food-card:hover {
+            transform: translateY(-4px);
+        }
+        .food-img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            background-color: #e0e0e0;
+        }
+        .food-info {
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            flex-grow: 1;
+        }
+        .food-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        .food-price {
+            font-size: 0.88rem;
+            color: #d32f2f;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .btn-add {
+            background: #388e3c;
+            color: white;
+            border: none;
+            padding: 7px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        .btn-add:hover {
+            background: #2e7d32;
+        }
+        /* List Minuman */
+        .drink-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+        }
+        .drink-group {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 18px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        }
+        .drink-group h3 {
+            font-size: 0.98rem;
+            color: #e65100;
+            margin-bottom: 12px;
+            border-bottom: 1px dashed #ffe0b2;
+            padding-bottom: 6px;
+        }
+        .drink-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 7px 0;
+            font-size: 0.88rem;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        .drink-item:last-child {
+            border-bottom: none;
+        }
+        .drink-price {
+            font-weight: 600;
+            color: #455a64;
+            margin-right: 10px;
+        }
+        .btn-add-sm {
+            background: #388e3c;
+            color: white;
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+        }
+        /* MELAYANG / FLOATING CART */
+        .cart-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #ffffff;
+            border-top: 2px solid #d32f2f;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
+            z-index: 999;
+        }
+        .cart-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .cart-count {
+            font-size: 0.8rem;
+            color: #666;
+        }
+        .cart-total {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #d32f2f;
+        }
+        .btn-checkout {
+            background: #d32f2f;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 3px 8px rgba(211, 47, 47, 0.3);
+        }
+        /* MODAL STRUK PESANAN */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+        }
+        .modal-content {
+            background-color: white;
+            border-radius: 12px;
+            max-width: 450px;
+            width: 100%;
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .modal-header h3 {
+            color: #b71c1c;
+        }
+        .cart-list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed #eee;
+        }
+        .qty-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .qty-btn {
+            background: #eee;
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .btn-submit-order {
+            width: 100%;
+            background: #2e7d32;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1rem;
+            margin-top: 15px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER DENGAN GAMBAR RESTORAN -->
+    <header>
+        <h1>Restaurant Boy</h1>
+        <p><i class="fa-solid fa-phone"></i> 08123456789 / 08123456789</p>
+    </header>
+    <!-- PILIHAN NOMOR MEJA & NAMA PEMESAN -->
+    <div class="table-bar">
+        <div class="input-group">
+            <label for="tableNumber"><i class="fa-solid fa-chair"></i> No Meja:</label>
+            <input type="number" id="tableNumber" placeholder="05" min="1">
+        </div>
+        <div class="input-group">
+            <label for="customerName"><i class="fa-solid fa-user"></i> Nama Pemesan:</label>
+            <input type="text" id="customerName" placeholder="Nama Anda">
+        </div>
+    </div>
+
+    <div class="category-nav-wrapper">
+        <div class="category-nav">
+            <button class="nav-btn active" onclick="filterMenu('all')"><i class="fa-solid fa-utensils"></i> Semua</button>
+            <button class="nav-btn" onclick="filterMenu('nasgor')"><i class="fa-solid fa-bowl-food"></i> Nasi Goreng</button>
+            <button class="nav-btn" onclick="filterMenu('pempek')"><i class="fa-solid fa-fish"></i> Pempek</button>
+            <button class="nav-btn" onclick="filterMenu('minuman')"><i class="fa-solid fa-glass-water"></i> Minuman</button>
+        </div>
+    </div>
+    <div class="container">
+        <!-- NASI GORENG -->
+        <div class="menu-section" id="nasgor">
+            <h2 class="section-title"><i class="fa-solid fa-bowl-food"></i> Nasi Goreng</h2>
+            <div class="food-grid">
+                <div class="food-card">
+                    <img src="https://i.pinimg.com/736x/7a/ce/29/7ace29fa0274ed7f6dff6e044143ed70.jpg" class="food-img" alt="Nasi Goreng Ayam">
+                    <div class="food-info">
+                        <div class="food-title">Nasi Goreng Ayam</div>
+                        <div class="food-price">Rp 22.000</div>
+                        <button class="btn-add" onclick="addToCart('Nasi Goreng Ayam', 22000)"><i class="fa-solid fa-plus"></i> Tambah</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- PEMPEK -->
+        <div class="menu-section" id="pempek">
+            <h2 class="section-title"><i class="fa-solid fa-fish"></i> Pempek</h2>
+            <div class="food-grid">
+                <div class="food-card">
+                    <img src="https://i.pinimg.com/736x/03/87/df/0387df0e304fb465e50639b90791be1b.jpg" class="food-img" alt="Pempek Bulat">
+                    <div class="food-info">
+                        <div class="food-title">Pempek Bulat</div>
+                        <div class="food-price">Rp 5.000</div>
+                        <button class="btn-add" onclick="addToCart('Pempek Bulat', 5000)"><i class="fa-solid fa-plus"></i> Tambah</button>
+                    </div>
+                </div>
+                <div class="food-card">
+                    <img src="https://i.pinimg.com/736x/fc/9b/e7/fc9be77e1939a29b39478488beb21538.jpg" class="food-img" alt="Pempek Balok">
+                    <div class="food-info">
+                        <div class="food-title">Pempek Balok</div>
+                        <div class="food-price">Rp 5.000</div>
+                        <button class="btn-add" onclick="addToCart('Pempek Balok', 5000)"><i class="fa-solid fa-plus"></i> Tambah</button>                
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- MINUMAN -->
+        <div class="menu-section" id="minuman">
+            <h2 class="section-title"><i class="fa-solid fa-glass-water"></i> Minuman</h2>
+            <div class="drink-container">
+                <div class="drink-group">
+                    <h3>Minuman Dingin & Hangat</h3>
+                    <div class="drink-item"><span>Air Putih</span><div><span class="drink-price">1k</span><button class="btn-add-sm" onclick="addToCart('Air Putih', 1000)"><i class="fa-solid fa-plus"></i></button></div></div>
+                    <div class="drink-item"><span>Es Jeruk Manis</span><div><span class="drink-price">12k</span><button class="btn-add-sm" onclick="addToCart('Es Jeruk Manis', 12000)"><i class="fa-solid fa-plus"></i></button></div></div>
+                    <div class="drink-item"><span>Es Campur</span><div><span class="drink-price">15k</span><button class="btn-add-sm" onclick="addToCart('Es Campur', 15000)"><i class="fa-solid fa-plus"></i></button></div></div>
+                    <div class="drink-item"><span>Es Cendol</span><div><span class="drink-price">17k</span><button class="btn-add-sm" onclick="addToCart('Es Cendol', 17000)"><i class="fa-solid fa-plus"></i></button></div></div>
+            </div>
+        </div>
+    </div>
+    <!-- FLOATING CART BAR -->
+    <div class="cart-bar">
+        <div class="cart-info">
+            <span class="cart-count" id="cartCount">0 Pesanan</span>
+            <span class="cart-total" id="cartTotal">Rp 0</span>
+        </div>
+        <button class="btn-checkout" onclick="openCartModal()">Lihat Pesanan <i class="fa-solid fa-cart-shopping"></i></button>
+    </div>
+    <!-- MODAL POPUP KERANJANG -->
+    <div id="cartModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-receipt"></i> Ringkasan Pesanan</h3>
+                <span style="cursor:pointer; font-weight:bold; font-size:1.2rem;" onclick="closeCartModal()">&times;</span>
+            </div>
+            <div id="cartItemsContainer"></div>
+            <hr style="margin: 15px 0;">
+            <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:1.1rem; color:#d32f2f;">
+                <span>Total Bayar:</span>
+                <span id="modalCartTotal">Rp 0</span>
+            </div>
+            <button class="btn-submit-order" onclick="submitOrder()"><i class="fa-solid fa-paper-plane"></i> Kirim Pesanan ke Kasir</button>
+        </div>
+    </div>
+    <script>
+        let cart = [];
+        
+function submitOrder() {
+    const tableNum = document.getElementById('tableNumber').value;
+    const customerName = document.getElementById('customerName').value.trim(); // 1. Ambil nilai nama
+
+    if (!tableNum) {
+        alert('Masukkan nomor meja!');
+        return;
+    }
+    if (cart.length === 0) {
+        alert('Keranjang pesanan masih kosong!');
+        return;
+    }
+
+    let totalPrice = 0;
+    cart.forEach(item => {
+        totalPrice += item.price * item.qty;
+    });
+
+    const orderData = {
+        id: Date.now(),
+        table: tableNum,
+        name: customerName || 'Tanpa Nama', // 2. Masukkan ke object (jika kosong ditulis Tanpa Nama)
+        items: cart,
+        total: totalPrice,
+        status: 'Belum Lunas',
+        time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
+    };
+
+    database.ref('orders/' + orderData.id).set(orderData, function(error) {
+        if (error) {
+            alert('Gagal mengirim pesanan: ' + error.message);
+        } else {
+            alert('Pesanan berhasil dikirim ke kasir!');
+            cart = [];
+            if (typeof updateCartUI === 'function') updateCartUI();
+            if (typeof closeCartModal === 'function') closeCartModal();
+            document.getElementById('tableNumber').value = '';
+            document.getElementById('customerName').value = ''; // Reset input nama
+        }
+    });
+}
+    
+        /* LOGIKA SYSTEM KERANJANG */
+        function addToCart(name, price) {
+            const tableNum = document.getElementById('tableNumber').value;
+            if (!tableNum) {
+                alert('Silakan masukkan Nomor Meja di bagian atas terlebih dahulu!');
+                document.getElementById('tableNumber').focus();
+                return;
+            }
+            const existingIndex = cart.findIndex(item => item.name === name);
+            if (existingIndex > -1) {
+                cart[existingIndex].qty += 1;
+            } else {
+                cart.push({ name: name, price: price, qty: 1 });
+            }
+            updateCartUI();
+        }
+        function updateCartUI() {
+            let totalQty = 0;
+            let totalPrice = 0;
+            cart.forEach(item => {
+                totalQty += item.qty;
+                totalPrice += (item.price * item.qty);
+            });
+            document.getElementById('cartCount').innerText = `${totalQty} Makanan/Minuman`;
+            document.getElementById('cartTotal').innerText = `Rp ${totalPrice.toLocaleString('id-ID')}`;
+            document.getElementById('modalCartTotal').innerText = `Rp ${totalPrice.toLocaleString('id-ID')}`;
+        }
+        function openCartModal() {
+            if (cart.length === 0) {
+                alert('Keranjang pesanan masih kosong.');
+                return;
+            }
+            const container = document.getElementById('cartItemsContainer');
+            container.innerHTML = '';
+            cart.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'cart-list-item';
+                div.innerHTML = `
+                    <div>
+                        <div style="font-weight:600;">${item.name}</div>
+                        <div style="font-size:0.8rem; color:#666;">Rp ${item.price.toLocaleString('id-ID')}</div>
+                    </div>
+                    <div class="qty-controls">
+                        <button class="qty-btn" onclick="changeQty(${index}, -1)">-</button>
+                        <span>${item.qty}</span>
+                        <button class="qty-btn" onclick="changeQty(${index}, 1)">+</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+            document.getElementById('cartModal').style.display = 'flex';
+        }
+        function closeCartModal() {
+            document.getElementById('cartModal').style.display = 'none';
+        }
+        function changeQty(index, change) {
+            cart[index].qty += change;
+            if (cart[index].qty <= 0) {
+                cart.splice(index, 1);
+            }
+            updateCartUI();
+            if (cart.length === 0) {
+                closeCartModal();
+            } else {
+                openCartModal();
+            }
+        }
+</script>
+</body>
+</html>
